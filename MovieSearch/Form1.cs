@@ -220,6 +220,7 @@ namespace MovieSearch
         private void btnClear_Click(object sender, EventArgs e)
         {
             lstDirList.Items.Clear();
+            lstMovies.DataSource = null;
             lstMovies.Items.Clear();
             lstFiltered.Items.Clear();
         }
