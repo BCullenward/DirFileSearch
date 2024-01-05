@@ -118,7 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="label2.Text" xml:space="preserve">
-    <value>INSTRUCTIONS: Click Add Directory to Search and select the directory you want added to search.  Select the base directory then pick to search for all the directories in that directory or the files based on what you scan.  The filter will filter as you type.  
+    <value>INSTRUCTIONS: Click Add Directory to Search.  Pick the Base directory that has the directories or files you want loaded, then click Scan Directories or Scan Files.  After the data is loaded type in the filter for what you are wanting to find.  Remove Path From Results will remove the file path from what is in the results.  Clear List will clear the result list for a new scan.
+
 </value>
   </data>
 </root>

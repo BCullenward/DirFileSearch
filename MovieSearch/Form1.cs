@@ -23,50 +23,6 @@ namespace MovieSearch
             InitializeComponent();
         }
 
-        //private void btnLoad_Click(object sender, EventArgs e)
-        //{
-        //    using (var selectFileDialog = new OpenFileDialog())
-        //    {
-        //        selectFileDialog.Filter = "TXT files (*.txt)|*.txt;|CSV files (*.csv)|*.csv";
-        //        if (selectFileDialog.ShowDialog() == DialogResult.OK)
-        //        {
-        //            lblFileLoc.Text = selectFileDialog.FileName;
-        //            LoadFile();
-        //        }
-        //    }
-        //}
-
-        //private void LoadFile()
-        //{
-        //    try
-        //    {
-        //        List<string> lines = new List<string>();
-        //        EmptyMovies();
-        //        using (StreamReader r = new StreamReader(lblFileLoc.Text))
-        //        {
-        //            string line;
-        //            dt.Columns.Add(new DataColumn("MovieTitle"));
-
-        //            while ((line = r.ReadLine()) != null)
-        //            {
-        //                DataRow dr = dt.NewRow();
-        //                dr[0] = removeFilePath(line);
-
-        //                dt.Rows.Add(dr);
-        //            }
-        //        }
-        //        lstMovies.DataSource = dt;
-        //        lstMovies.ValueMember = "MovieTitle";
-        //        lstMovies.DisplayMember = "MovieTitle";
-        //        lblMovies.Text = string.Format("{0} Movies", lstMovies.Items.Count.ToString());
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-        //}
-
         private string removeFilePath(string sFileName)
         {
             try
@@ -77,7 +33,6 @@ namespace MovieSearch
                     {
                         sFileName = sFileName.Substring(path.Length);
                     }
-                    //sFileName = Regex.Replace(sFileName, path, string.Empty, RegexOptions.IgnoreCase);
                 }
             }
             catch (Exception ex)
@@ -121,8 +76,7 @@ namespace MovieSearch
 
         private void EmptyMovies()
         {
-            List<string> empty = new List<string>();
-            lstMovies.DataSource = empty;
+            dt.Rows.Clear();
         }
 
         private void ScanFolders(ScanType scanType)
@@ -220,10 +174,11 @@ namespace MovieSearch
         private void btnClear_Click(object sender, EventArgs e)
         {
             lstDirList.Items.Clear();
-            lstMovies.DataSource = null;
-            lstMovies.Items.Clear();
-            lstFiltered.Items.Clear();
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            EmptyMovies();
+        }
     }
 }
