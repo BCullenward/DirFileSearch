@@ -12,6 +12,7 @@ namespace MovieSearch
     {
 
         private DataTable dt = new DataTable();
+        private MediaContext db = new MediaContext();
         private enum ScanType
         {
             Directories,
@@ -141,10 +142,19 @@ namespace MovieSearch
         private void Form1_Load(object sender, EventArgs e)
         {
             dt.Columns.Add(new DataColumn("MovieTitle"));
-            lstDirList.Items.Add(@"F:\MOVIES\");
-            lstDirList.Items.Add(@"H:\MOVIES\");
-            lstDirList.Items.Add(@"J:\MOVIES-Sleaze\");
-            lstDirList.Items.Add(@"E:\MOVIES\");
+            db.SearchPaths.ToList().ForEach(m => lstDirList.Items.Add(m.Directory));
+            lstDirList.Sorted = true;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            db.SearchPaths.RemoveRange(db.SearchPaths);
+            db.SaveChanges();
+            foreach (string path in lstDirList.Items)
+            {
+                db.SearchPaths.Add(new SearchPaths { Directory = path });
+            }
+            db.SaveChanges();
         }
 
         private void btnScanTV_Click(object sender, EventArgs e)
