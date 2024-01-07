@@ -14,6 +14,15 @@ namespace MovieSearch
         [STAThread]
         static void Main()
         {
+            var dbPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\MovieSearch\";
+            if (!System.IO.Directory.Exists(dbPath))
+            {
+                System.IO.Directory.CreateDirectory(dbPath);
+            }
+
+            MediaContext db = new MediaContext();
+            db.Database.EnsureCreated();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

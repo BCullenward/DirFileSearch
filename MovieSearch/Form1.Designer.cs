@@ -28,170 +28,241 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.lstMovies = new System.Windows.Forms.ListBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtFilter = new System.Windows.Forms.TextBox();
-            this.lstFiltered = new System.Windows.Forms.ListBox();
-            this.btnScanMovies = new System.Windows.Forms.Button();
-            this.lblMovies = new System.Windows.Forms.Label();
-            this.btnScanTV = new System.Windows.Forms.Button();
-            this.lstDirList = new System.Windows.Forms.ListBox();
-            this.btnAddDirectory = new System.Windows.Forms.Button();
-            this.btnClear = new System.Windows.Forms.Button();
-            this.chkRemovePath = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            lstMovies = new System.Windows.Forms.ListBox();
+            label1 = new System.Windows.Forms.Label();
+            txtFilter = new System.Windows.Forms.TextBox();
+            lstFiltered = new System.Windows.Forms.ListBox();
+            btnScanMovies = new System.Windows.Forms.Button();
+            lblMovies = new System.Windows.Forms.Label();
+            btnScanTV = new System.Windows.Forms.Button();
+            lstDirList = new System.Windows.Forms.ListBox();
+            dirListMenuStrip = new System.Windows.Forms.ContextMenuStrip(components);
+            browseDirListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            removeDirListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            addDirListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            clearAllDirListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            btnAddDirectory = new System.Windows.Forms.Button();
+            btnClear = new System.Windows.Forms.Button();
+            chkRemovePath = new System.Windows.Forms.CheckBox();
+            label2 = new System.Windows.Forms.Label();
+            button1 = new System.Windows.Forms.Button();
+            dirListMenuStrip.SuspendLayout();
+            SuspendLayout();
             // 
             // lstMovies
             // 
-            this.lstMovies.FormattingEnabled = true;
-            this.lstMovies.Location = new System.Drawing.Point(12, 198);
-            this.lstMovies.Name = "lstMovies";
-            this.lstMovies.Size = new System.Drawing.Size(893, 394);
-            this.lstMovies.TabIndex = 0;
-            this.lstMovies.TabStop = false;
+            lstMovies.FormattingEnabled = true;
+            lstMovies.ItemHeight = 15;
+            lstMovies.Location = new System.Drawing.Point(14, 228);
+            lstMovies.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lstMovies.Name = "lstMovies";
+            lstMovies.Size = new System.Drawing.Size(1041, 454);
+            lstMovies.TabIndex = 0;
+            lstMovies.TabStop = false;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 179);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(29, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Filter";
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(10, 207);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(33, 15);
+            label1.TabIndex = 2;
+            label1.Text = "Filter";
             // 
             // txtFilter
             // 
-            this.txtFilter.Location = new System.Drawing.Point(44, 172);
-            this.txtFilter.Name = "txtFilter";
-            this.txtFilter.Size = new System.Drawing.Size(786, 20);
-            this.txtFilter.TabIndex = 60;
-            this.txtFilter.TextChanged += new System.EventHandler(this.txtFilter_TextChanged);
+            txtFilter.Location = new System.Drawing.Point(51, 198);
+            txtFilter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtFilter.Name = "txtFilter";
+            txtFilter.Size = new System.Drawing.Size(916, 23);
+            txtFilter.TabIndex = 60;
+            txtFilter.TextChanged += txtFilter_TextChanged;
             // 
             // lstFiltered
             // 
-            this.lstFiltered.FormattingEnabled = true;
-            this.lstFiltered.Location = new System.Drawing.Point(12, 201);
-            this.lstFiltered.Name = "lstFiltered";
-            this.lstFiltered.Size = new System.Drawing.Size(893, 394);
-            this.lstFiltered.TabIndex = 5;
-            this.lstFiltered.TabStop = false;
-            this.lstFiltered.Visible = false;
+            lstFiltered.FormattingEnabled = true;
+            lstFiltered.ItemHeight = 15;
+            lstFiltered.Location = new System.Drawing.Point(14, 232);
+            lstFiltered.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lstFiltered.Name = "lstFiltered";
+            lstFiltered.Size = new System.Drawing.Size(1041, 454);
+            lstFiltered.TabIndex = 5;
+            lstFiltered.TabStop = false;
+            lstFiltered.Visible = false;
             // 
             // btnScanMovies
             // 
-            this.btnScanMovies.Location = new System.Drawing.Point(728, 85);
-            this.btnScanMovies.Name = "btnScanMovies";
-            this.btnScanMovies.Size = new System.Drawing.Size(180, 38);
-            this.btnScanMovies.TabIndex = 40;
-            this.btnScanMovies.Text = "Scan Directories";
-            this.btnScanMovies.UseVisualStyleBackColor = true;
-            this.btnScanMovies.Click += new System.EventHandler(this.btnScan_Click);
+            btnScanMovies.Location = new System.Drawing.Point(849, 98);
+            btnScanMovies.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnScanMovies.Name = "btnScanMovies";
+            btnScanMovies.Size = new System.Drawing.Size(210, 44);
+            btnScanMovies.TabIndex = 40;
+            btnScanMovies.Text = "Scan Directories";
+            btnScanMovies.UseVisualStyleBackColor = true;
+            btnScanMovies.Click += btnScan_Click;
             // 
             // lblMovies
             // 
-            this.lblMovies.AutoSize = true;
-            this.lblMovies.Location = new System.Drawing.Point(821, 605);
-            this.lblMovies.Name = "lblMovies";
-            this.lblMovies.Size = new System.Drawing.Size(57, 13);
-            this.lblMovies.TabIndex = 0;
-            this.lblMovies.Text = "0 Result(s)";
+            lblMovies.AutoSize = true;
+            lblMovies.Location = new System.Drawing.Point(734, 689);
+            lblMovies.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblMovies.MinimumSize = new System.Drawing.Size(321, 15);
+            lblMovies.Name = "lblMovies";
+            lblMovies.Size = new System.Drawing.Size(321, 15);
+            lblMovies.TabIndex = 0;
+            lblMovies.Text = "0 Result(s)";
+            lblMovies.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // btnScanTV
             // 
-            this.btnScanTV.Location = new System.Drawing.Point(728, 129);
-            this.btnScanTV.Name = "btnScanTV";
-            this.btnScanTV.Size = new System.Drawing.Size(180, 37);
-            this.btnScanTV.TabIndex = 50;
-            this.btnScanTV.Text = "Scan Files";
-            this.btnScanTV.UseVisualStyleBackColor = true;
-            this.btnScanTV.Click += new System.EventHandler(this.btnScanTV_Click);
+            btnScanTV.Location = new System.Drawing.Point(849, 149);
+            btnScanTV.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnScanTV.Name = "btnScanTV";
+            btnScanTV.Size = new System.Drawing.Size(210, 43);
+            btnScanTV.TabIndex = 50;
+            btnScanTV.Text = "Scan Files";
+            btnScanTV.UseVisualStyleBackColor = true;
+            btnScanTV.Click += btnScanTV_Click;
             // 
             // lstDirList
             // 
-            this.lstDirList.FormattingEnabled = true;
-            this.lstDirList.Location = new System.Drawing.Point(105, 58);
-            this.lstDirList.Name = "lstDirList";
-            this.lstDirList.Size = new System.Drawing.Size(617, 108);
-            this.lstDirList.TabIndex = 9;
-            this.lstDirList.TabStop = false;
+            lstDirList.ContextMenuStrip = dirListMenuStrip;
+            lstDirList.FormattingEnabled = true;
+            lstDirList.ItemHeight = 15;
+            lstDirList.Location = new System.Drawing.Point(122, 67);
+            lstDirList.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lstDirList.Name = "lstDirList";
+            lstDirList.Size = new System.Drawing.Size(719, 124);
+            lstDirList.TabIndex = 9;
+            lstDirList.TabStop = false;
+            lstDirList.MouseDown += lstDirList_MouseDown;
+            // 
+            // dirListMenuStrip
+            // 
+            dirListMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { browseDirListMenuItem, removeDirListMenuItem, toolStripSeparator1, addDirListMenuItem, clearAllDirListMenuItem });
+            dirListMenuStrip.Name = "dirListMenuStrip";
+            dirListMenuStrip.ShowImageMargin = false;
+            dirListMenuStrip.Size = new System.Drawing.Size(99, 98);
+            dirListMenuStrip.Opening += DirList_ContextMenuStrip_Opening;
+            // 
+            // browseDirListMenuItem
+            // 
+            browseDirListMenuItem.Name = "browseDirListMenuItem";
+            browseDirListMenuItem.Size = new System.Drawing.Size(98, 22);
+            browseDirListMenuItem.Text = "Browse";
+            browseDirListMenuItem.Click += Browse_DirList_MenuItem_Click;
+            // 
+            // removeDirListMenuItem
+            // 
+            removeDirListMenuItem.Name = "removeDirListMenuItem";
+            removeDirListMenuItem.Size = new System.Drawing.Size(98, 22);
+            removeDirListMenuItem.Text = "Remove";
+            removeDirListMenuItem.Click += Remove_DirList_MenuItem_Click;
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new System.Drawing.Size(95, 6);
+            // 
+            // addDirListMenuItem
+            // 
+            addDirListMenuItem.Name = "addDirListMenuItem";
+            addDirListMenuItem.Size = new System.Drawing.Size(98, 22);
+            addDirListMenuItem.Text = "Add New";
+            addDirListMenuItem.Click += Add_DirList_MenuItem_Click;
+            // 
+            // clearAllDirListMenuItem
+            // 
+            clearAllDirListMenuItem.Name = "clearAllDirListMenuItem";
+            clearAllDirListMenuItem.Size = new System.Drawing.Size(98, 22);
+            clearAllDirListMenuItem.Text = "Clear All";
+            clearAllDirListMenuItem.Click += ClearAll_DirList_MenuItem_Click;
             // 
             // btnAddDirectory
             // 
-            this.btnAddDirectory.Location = new System.Drawing.Point(12, 62);
-            this.btnAddDirectory.Name = "btnAddDirectory";
-            this.btnAddDirectory.Size = new System.Drawing.Size(87, 54);
-            this.btnAddDirectory.TabIndex = 10;
-            this.btnAddDirectory.Text = "Add Directory to Search";
-            this.btnAddDirectory.UseVisualStyleBackColor = true;
-            this.btnAddDirectory.Click += new System.EventHandler(this.btnAddDirectory_Click);
+            btnAddDirectory.Location = new System.Drawing.Point(14, 72);
+            btnAddDirectory.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnAddDirectory.Name = "btnAddDirectory";
+            btnAddDirectory.Size = new System.Drawing.Size(102, 62);
+            btnAddDirectory.TabIndex = 10;
+            btnAddDirectory.Text = "Add Directory to Search";
+            btnAddDirectory.UseVisualStyleBackColor = true;
+            btnAddDirectory.Click += btnAddDirectory_Click;
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(12, 122);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(84, 41);
-            this.btnClear.TabIndex = 20;
-            this.btnClear.Text = "Clear Directory List";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            btnClear.Location = new System.Drawing.Point(14, 141);
+            btnClear.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnClear.Name = "btnClear";
+            btnClear.Size = new System.Drawing.Size(98, 47);
+            btnClear.TabIndex = 20;
+            btnClear.Text = "Clear Directory List";
+            btnClear.UseVisualStyleBackColor = true;
+            btnClear.Click += btnClear_Click;
             // 
             // chkRemovePath
             // 
-            this.chkRemovePath.AutoSize = true;
-            this.chkRemovePath.Checked = true;
-            this.chkRemovePath.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkRemovePath.Location = new System.Drawing.Point(753, 62);
-            this.chkRemovePath.Name = "chkRemovePath";
-            this.chkRemovePath.Size = new System.Drawing.Size(155, 17);
-            this.chkRemovePath.TabIndex = 30;
-            this.chkRemovePath.Text = "Remove Path From Results";
-            this.chkRemovePath.UseVisualStyleBackColor = true;
+            chkRemovePath.AutoSize = true;
+            chkRemovePath.Checked = true;
+            chkRemovePath.CheckState = System.Windows.Forms.CheckState.Checked;
+            chkRemovePath.Location = new System.Drawing.Point(878, 72);
+            chkRemovePath.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkRemovePath.Name = "chkRemovePath";
+            chkRemovePath.Size = new System.Drawing.Size(167, 19);
+            chkRemovePath.TabIndex = 30;
+            chkRemovePath.Text = "Remove Path From Results";
+            chkRemovePath.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(21, 9);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(884, 46);
-            this.label2.TabIndex = 0;
-            this.label2.Text = resources.GetString("label2.Text");
+            label2.Location = new System.Drawing.Point(24, 10);
+            label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(1031, 53);
+            label2.TabIndex = 0;
+            label2.Text = resources.GetString("label2.Text");
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(836, 169);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(72, 25);
-            this.button1.TabIndex = 70;
-            this.button1.Text = "Clear List";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            button1.Location = new System.Drawing.Point(975, 195);
+            button1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            button1.Name = "button1";
+            button1.Size = new System.Drawing.Size(84, 29);
+            button1.TabIndex = 70;
+            button1.Text = "Clear List";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(917, 627);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.chkRemovePath);
-            this.Controls.Add(this.btnClear);
-            this.Controls.Add(this.btnAddDirectory);
-            this.Controls.Add(this.lstDirList);
-            this.Controls.Add(this.btnScanTV);
-            this.Controls.Add(this.lblMovies);
-            this.Controls.Add(this.btnScanMovies);
-            this.Controls.Add(this.lstFiltered);
-            this.Controls.Add(this.txtFilter);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.lstMovies);
-            this.Name = "Form1";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(1070, 723);
+            Controls.Add(button1);
+            Controls.Add(label2);
+            Controls.Add(chkRemovePath);
+            Controls.Add(btnClear);
+            Controls.Add(btnAddDirectory);
+            Controls.Add(lstDirList);
+            Controls.Add(btnScanTV);
+            Controls.Add(lblMovies);
+            Controls.Add(btnScanMovies);
+            Controls.Add(lstFiltered);
+            Controls.Add(txtFilter);
+            Controls.Add(label1);
+            Controls.Add(lstMovies);
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "Form1";
+            Text = "Form1";
+            FormClosing += Form1_FormClosing;
+            Load += Form1_Load;
+            dirListMenuStrip.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -209,6 +280,12 @@
         private System.Windows.Forms.CheckBox chkRemovePath;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ContextMenuStrip dirListMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem browseDirListMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeDirListMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem addDirListMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clearAllDirListMenuItem;
     }
 }
 
