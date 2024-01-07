@@ -1,254 +1,192 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Windows.Forms;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Diagnostics;
 using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using System.Windows.Forms;
 
-namespace MovieSearch
+namespace MovieSearch;
+
+public partial class Form1 : Form
 {
-    public partial class Form1 : Form
+    private DataTable dt = new();
+    private MediaContext db = new();
+    private DataAccess da = new();
+
+    private enum ScanType
     {
+        Directories,
+        Files
+    }
 
-        private DataTable dt = new DataTable();
-        private MediaContext db = new MediaContext();
-        private enum ScanType
+    public Form1()
+    {
+        InitializeComponent();
+        dt.Columns.Add(new DataColumn("MovieTitle"));
+        dt.DefaultView.Sort = "MovieTitle asc";
+    }
+
+    private void ClearDirList()
+    {
+        da.ClearDirectories();
+        lstDirList.Items.Clear();
+    }
+
+    private void ClearMovieList()
+    {
+        lstMovies.DataSource = null;
+        lstMovies.Items.Clear();
+        lblMovies.Text = "0 Result(s)";
+    }
+
+    private void UpdateMovieListBinding()
+    {
+        lstMovies.DataSource = dt;
+        lstMovies.ValueMember = "MovieTitle";
+        lstMovies.DisplayMember = "MovieTitle";
+        lblMovies.Text = String.Format("{0} Result{1}", lstMovies.Items.Count.ToString(),
+                       lstMovies.Items.Count == 1 ? "" : "(s)");
+    }
+
+    private string removeFilePath(string sFileName)
+    {
+        try
         {
-            Directories,
-            Files
+            foreach (string path in lstDirList.Items)
+                if (sFileName.IndexOf(path) >= 0)
+                    sFileName = sFileName.Substring(path.Length);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
         }
 
-        public Form1()
-        {
-            InitializeComponent();
-        }
+        return sFileName;
+    }
 
-        private void ClearDirList()
-        {
-            lstDirList.Items.Clear();
-        }
+    private void txtFilter_TextChanged(object sender, EventArgs e)
+    {
+        dt.DefaultView.RowFilter = string.Format("MovieTitle LIKE '%{0}%'", txtFilter.Text);
+        UpdateMovieListBinding();
 
-        private void AddDirectory()
-        {
-            using (var fbd = new FolderBrowserDialog())
-            {
-                DialogResult result = fbd.ShowDialog();
+        lblMovies.Text = String.Format("{0} Result{1}", dt.DefaultView.Count.ToString(),
+            lstMovies.Items.Count == 1 ? "" : "(s)");
+    }
 
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                {
-                    string dir = fbd.SelectedPath;
-                    if (dir.Substring(dir.Length - 1) != @"\")
+    private void btnScan_Click(object sender, EventArgs e)
+    {
+        ScanFolders(ScanType.Directories);
+    }
+
+    private void ScanFolders(ScanType scanType)
+    {
+        try
+        {
+            ClearMovieList();
+            foreach (String path in lstDirList.Items)
+                foreach (String dir in Directory.EnumerateDirectories(path))
+                    if (scanType == ScanType.Files)
                     {
-                        dir = dir + @"\";
-                    }
-                    lstDirList.Items.Add(dir);
-                }
-            }
-            lstDirList.Sorted = true;
-        }
-
-        private string removeFilePath(string sFileName)
-        {
-            try
-            {
-                foreach (string path in lstDirList.Items)
-                {
-                    if (sFileName.IndexOf(path) >= 0)
-                    {
-                        sFileName = sFileName.Substring(path.Length);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            return sFileName;
-        }
-
-        private void txtFilter_TextChanged(object sender, EventArgs e)
-        {
-            string filter = txtFilter.Text;
-            if (filter == String.Empty)
-            {
-                lstMovies.DataSource = dt;
-            }
-            else
-            {
-                DataTable dtFilteredTable = new DataTable();
-                DataTable dtEmpty = new DataTable();
-                dtEmpty.Columns.Add(new DataColumn("MovieTitle"));
-                DataRow dr = dtEmpty.NewRow();
-                dr[0] = String.Empty;
-                dtEmpty.Rows.Add(dr);
-
-                var rows = dt.AsEnumerable()
-                        .Where(row => row.Field<string>("MovieTitle").ToUpper().Contains(filter.ToUpper()))
-                        .OrderBy(row => row.Field<string>("MovieTitle"));
-
-                dtFilteredTable = rows.Any() ? rows.CopyToDataTable() : dtEmpty.Clone();
-
-                lstMovies.DataSource = dtFilteredTable;
-            }
-            lblMovies.Text = string.Format("{0} Result{1}", lstMovies.Items.Count.ToString(), lstMovies.Items.Count == 1 ? "(s)" : "");
-        }
-
-        private void btnScan_Click(object sender, EventArgs e)
-        {
-            ScanFolders(ScanType.Directories);
-        }
-
-        private void EmptyMovies()
-        {
-            dt.Rows.Clear();
-        }
-
-        private void ScanFolders(ScanType scanType)
-        {
-            try
-            {
-                List<string> lines = new List<string>();
-                List<string> paths = new List<string>();
-                EmptyMovies();
-
-                foreach (string path in lstDirList.Items)
-                {
-                    foreach (string dir in Directory.EnumerateDirectories(path))
-                    {
-                        if (scanType == ScanType.Files)
-                        {
-                            foreach (string file in Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories))
-                            {
-                                DataRow dr = dt.NewRow();
-                                if (chkRemovePath.Checked)
-                                {
-                                    dr[0] = removeFilePath(file);
-                                }
-                                else
-                                {
-                                    dr[0] = file;
-                                }
-                                dt.Rows.Add(dr);
-                            }
-                        }
-                        else
+                        foreach (String file in Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories))
                         {
                             DataRow dr = dt.NewRow();
-                            dr[0] = removeFilePath(dir);
-
+                            if (chkRemovePath.Checked)
+                                dr[0] = removeFilePath(file);
+                            else
+                                dr[0] = file;
                             dt.Rows.Add(dr);
                         }
-
                     }
-                }
-                lstMovies.DataSource = dt;
-                lstMovies.ValueMember = "MovieTitle";
-                lstMovies.DisplayMember = "MovieTitle";
-                lblMovies.Text = string.Format("{0} Result{1}", lstMovies.Items.Count.ToString(), lstMovies.Items.Count == 1 ? "(s)" : "");
-                SortDataTable();
-                MessageBox.Show("Loaded!");
-            }
-
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void SortDataTable()
-        {
-            DataView dv = dt.DefaultView;
-            dv.Sort = "MovieTitle asc";
-            dt = dv.ToTable();
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            dt.Columns.Add(new DataColumn("MovieTitle"));
-            db.SearchPaths.ToList().ForEach(m => lstDirList.Items.Add(m.Directory));
-            lstDirList.Sorted = true;
-        }
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            db.SearchPaths.RemoveRange(db.SearchPaths);
-            db.SaveChanges();
-            foreach (string path in lstDirList.Items)
-            {
-                db.SearchPaths.Add(new SearchPaths { Directory = path });
-            }
-            db.SaveChanges();
-        }
-
-        private void btnScanTV_Click(object sender, EventArgs e)
-        {
-            ScanFolders(ScanType.Files);
-        }
-
-        private void btnAddDirectory_Click(object sender, EventArgs e)
-        {
-            using (var fbd = new FolderBrowserDialog())
-            {
-                DialogResult result = fbd.ShowDialog();
-
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                {
-                    string dir = fbd.SelectedPath;
-                    if (dir.Substring(dir.Length -1) != @"\")
+                    else
                     {
-                        dir = dir + @"\";
+                        DataRow dr = dt.NewRow();
+                        dr[0] = removeFilePath(dir);
+
+                        dt.Rows.Add(dr);
                     }
-                    lstDirList.Items.Add(dir);
-                }
-            }
-            lstDirList.Sorted = true;
+
+                UpdateMovieListBinding();
+                MessageBox.Show("Loaded!");
         }
 
-        private void btnClear_Click(object sender, EventArgs e)
+        catch (Exception ex)
         {
-            ClearDirList();
+            MessageBox.Show(ex.Message);
         }
+    }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            EmptyMovies();
-        }
-        private void DirList_ContextMenuStrip_Opening(object sender, CancelEventArgs e)
-        {
-            if (lstDirList.SelectedItem == null)
-                e.Cancel = true;
-        }
+    private void Form1_Load(object sender, EventArgs e)
+    {
+        db.SearchPaths.ToList().ForEach(m => { lstDirList.Items.Add(m.Directory); });
+    }
 
-        private void lstDirList_MouseDown(object sender, MouseEventArgs e)
-        {
-            lstDirList.SelectedIndex = lstDirList.IndexFromPoint(e.X, e.Y);
-        }
-        private void Browse_DirList_MenuItem_Click(object sender, EventArgs e)
-        {
-            Process.Start("explorer.exe", lstDirList.SelectedItem.ToString());
-        }
+    private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        db.SearchPaths.RemoveRange(db.SearchPaths);
+        db.SaveChanges();
+        foreach (String path in lstDirList.Items) lstDirList.Items.Add(da.AddDirectory(path));
+        db.SaveChanges();
+    }
 
-        private void Remove_DirList_MenuItem_Click(object sender, EventArgs e)
-        {
-            var item = lstDirList.SelectedItem;
-            if (item != null)
-            {
-                lstDirList.Items.Remove(item);
-            }
-        }
+    private void btnScanTV_Click(object sender, EventArgs e)
+    {
+        ScanFolders(ScanType.Files);
+    }
 
-        private void Add_DirList_MenuItem_Click(object sender, EventArgs e)
+    private void btnAddDirectory_Click(object sender, EventArgs e)
+    {
+        String lstItem = da.AddDirectory();
+        if (!String.IsNullOrEmpty(lstItem))
         {
-            AddDirectory();
+            lstDirList.Items.Add(lstItem);
         }
+    }
 
-        private void ClearAll_DirList_MenuItem_Click(object sender, EventArgs e)
+    private void btnClear_Click(object sender, EventArgs e)
+    {
+        ClearDirList();
+    }
+
+    private void button1_Click(object sender, EventArgs e)
+    {
+        ClearMovieList();
+    }
+
+    private void DirList_ContextMenuStrip_Opening(object sender, CancelEventArgs e)
+    {
+        if (lstDirList.SelectedItem == null)
+            e.Cancel = true;
+    }
+
+    private void lstDirList_MouseDown(object sender, MouseEventArgs e)
+    {
+        lstDirList.SelectedIndex = lstDirList.IndexFromPoint(e.X, e.Y);
+    }
+
+    private void Browse_DirList_MenuItem_Click(object sender, EventArgs e)
+    {
+        Process.Start("explorer.exe", lstDirList.SelectedItem.ToString());
+    }
+
+    private void Remove_DirList_MenuItem_Click(object sender, EventArgs e)
+    {
+        Object item = lstDirList.SelectedItem;
+        if (item != null) lstDirList.Items.Remove(da.RemoveDirectory(item.ToString()));
+    }
+
+    private void Add_DirList_MenuItem_Click(object sender, EventArgs e)
+    {
+        String lstItem = da.AddDirectory();
+        if (!String.IsNullOrEmpty(lstItem))
         {
-            ClearDirList();
+            lstDirList.Items.Add(lstItem);
         }
+    }
 
+    private void ClearAll_DirList_MenuItem_Click(object sender, EventArgs e)
+    {
+        ClearDirList();
     }
 }
