@@ -45,10 +45,10 @@
             addDirListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             clearAllDirListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             btnAddDirectory = new System.Windows.Forms.Button();
-            btnClear = new System.Windows.Forms.Button();
+            btnClearDirectoryList = new System.Windows.Forms.Button();
             chkRemovePath = new System.Windows.Forms.CheckBox();
             label2 = new System.Windows.Forms.Label();
-            button1 = new System.Windows.Forms.Button();
+            btnClearMovieList = new System.Windows.Forms.Button();
             dirListMenuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -193,16 +193,16 @@
             btnAddDirectory.UseVisualStyleBackColor = true;
             btnAddDirectory.Click += btnAddDirectory_Click;
             // 
-            // btnClear
+            // btnClearDirectoryList
             // 
-            btnClear.Location = new System.Drawing.Point(14, 141);
-            btnClear.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            btnClear.Name = "btnClear";
-            btnClear.Size = new System.Drawing.Size(98, 47);
-            btnClear.TabIndex = 20;
-            btnClear.Text = "Clear Directory List";
-            btnClear.UseVisualStyleBackColor = true;
-            btnClear.Click += btnClear_Click;
+            btnClearDirectoryList.Location = new System.Drawing.Point(14, 141);
+            btnClearDirectoryList.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnClearDirectoryList.Name = "btnClearDirectoryList";
+            btnClearDirectoryList.Size = new System.Drawing.Size(98, 47);
+            btnClearDirectoryList.TabIndex = 20;
+            btnClearDirectoryList.Text = "Clear Directory List";
+            btnClearDirectoryList.UseVisualStyleBackColor = true;
+            btnClearDirectoryList.Click += btnClearDirList_Click;
             // 
             // chkRemovePath
             // 
@@ -226,26 +226,26 @@
             label2.TabIndex = 0;
             label2.Text = resources.GetString("label2.Text");
             // 
-            // button1
+            // btnClearMovieList
             // 
-            button1.Location = new System.Drawing.Point(975, 195);
-            button1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            button1.Name = "button1";
-            button1.Size = new System.Drawing.Size(84, 29);
-            button1.TabIndex = 70;
-            button1.Text = "Clear List";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            btnClearMovieList.Location = new System.Drawing.Point(975, 195);
+            btnClearMovieList.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnClearMovieList.Name = "btnClearMovieList";
+            btnClearMovieList.Size = new System.Drawing.Size(84, 29);
+            btnClearMovieList.TabIndex = 70;
+            btnClearMovieList.Text = "Clear List";
+            btnClearMovieList.UseVisualStyleBackColor = true;
+            btnClearMovieList.Click += btnClearMovieList_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1070, 723);
-            Controls.Add(button1);
+            Controls.Add(btnClearMovieList);
             Controls.Add(label2);
             Controls.Add(chkRemovePath);
-            Controls.Add(btnClear);
+            Controls.Add(btnClearDirectoryList);
             Controls.Add(btnAddDirectory);
             Controls.Add(lstDirList);
             Controls.Add(btnScanTV);
@@ -276,10 +276,10 @@
         private System.Windows.Forms.Button btnScanTV;
         private System.Windows.Forms.ListBox lstDirList;
         private System.Windows.Forms.Button btnAddDirectory;
-        private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Button btnClearDirectoryList;
         private System.Windows.Forms.CheckBox chkRemovePath;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnClearMovieList;
         private System.Windows.Forms.ContextMenuStrip dirListMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem browseDirListMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeDirListMenuItem;
