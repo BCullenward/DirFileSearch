@@ -30,13 +30,10 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            lstMovies = new System.Windows.Forms.ListBox();
             label1 = new System.Windows.Forms.Label();
             txtFilter = new System.Windows.Forms.TextBox();
-            lstFiltered = new System.Windows.Forms.ListBox();
             btnScanMovies = new System.Windows.Forms.Button();
             lblMovies = new System.Windows.Forms.Label();
-            btnScanTV = new System.Windows.Forms.Button();
             lstDirList = new System.Windows.Forms.ListBox();
             dirListMenuStrip = new System.Windows.Forms.ContextMenuStrip(components);
             browseDirListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,24 +41,22 @@
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             addDirListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             clearAllDirListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            exportDirListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            exportCSV = new System.Windows.Forms.ToolStripMenuItem();
+            exportJSON = new System.Windows.Forms.ToolStripMenuItem();
+            exportXML = new System.Windows.Forms.ToolStripMenuItem();
             btnAddDirectory = new System.Windows.Forms.Button();
             btnClearDirectoryList = new System.Windows.Forms.Button();
             chkRemovePath = new System.Windows.Forms.CheckBox();
             label2 = new System.Windows.Forms.Label();
             btnClearMovieList = new System.Windows.Forms.Button();
+            dgvDirectories = new System.Windows.Forms.DataGridView();
+            chkShowFiles = new System.Windows.Forms.CheckBox();
+            btnExport = new System.Windows.Forms.Button();
             dirListMenuStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvDirectories).BeginInit();
             SuspendLayout();
-            // 
-            // lstMovies
-            // 
-            lstMovies.FormattingEnabled = true;
-            lstMovies.ItemHeight = 15;
-            lstMovies.Location = new System.Drawing.Point(14, 228);
-            lstMovies.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            lstMovies.Name = "lstMovies";
-            lstMovies.Size = new System.Drawing.Size(1041, 454);
-            lstMovies.TabIndex = 0;
-            lstMovies.TabStop = false;
             // 
             // label1
             // 
@@ -82,24 +77,12 @@
             txtFilter.TabIndex = 60;
             txtFilter.TextChanged += txtFilter_TextChanged;
             // 
-            // lstFiltered
-            // 
-            lstFiltered.FormattingEnabled = true;
-            lstFiltered.ItemHeight = 15;
-            lstFiltered.Location = new System.Drawing.Point(14, 232);
-            lstFiltered.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            lstFiltered.Name = "lstFiltered";
-            lstFiltered.Size = new System.Drawing.Size(1041, 454);
-            lstFiltered.TabIndex = 5;
-            lstFiltered.TabStop = false;
-            lstFiltered.Visible = false;
-            // 
             // btnScanMovies
             // 
-            btnScanMovies.Location = new System.Drawing.Point(849, 98);
+            btnScanMovies.Location = new System.Drawing.Point(845, 66);
             btnScanMovies.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnScanMovies.Name = "btnScanMovies";
-            btnScanMovies.Size = new System.Drawing.Size(210, 44);
+            btnScanMovies.Size = new System.Drawing.Size(210, 30);
             btnScanMovies.TabIndex = 40;
             btnScanMovies.Text = "Scan Directories";
             btnScanMovies.UseVisualStyleBackColor = true;
@@ -117,17 +100,6 @@
             lblMovies.Text = "0 Result(s)";
             lblMovies.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // btnScanTV
-            // 
-            btnScanTV.Location = new System.Drawing.Point(849, 149);
-            btnScanTV.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            btnScanTV.Name = "btnScanTV";
-            btnScanTV.Size = new System.Drawing.Size(210, 43);
-            btnScanTV.TabIndex = 50;
-            btnScanTV.Text = "Scan Files";
-            btnScanTV.UseVisualStyleBackColor = true;
-            btnScanTV.Click += btnScanTV_Click;
-            // 
             // lstDirList
             // 
             lstDirList.ContextMenuStrip = dirListMenuStrip;
@@ -143,44 +115,74 @@
             // 
             // dirListMenuStrip
             // 
-            dirListMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { browseDirListMenuItem, removeDirListMenuItem, toolStripSeparator1, addDirListMenuItem, clearAllDirListMenuItem });
+            dirListMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { browseDirListMenuItem, removeDirListMenuItem, toolStripSeparator1, addDirListMenuItem, clearAllDirListMenuItem, toolStripSeparator2, exportDirListMenuItem });
             dirListMenuStrip.Name = "dirListMenuStrip";
             dirListMenuStrip.ShowImageMargin = false;
-            dirListMenuStrip.Size = new System.Drawing.Size(99, 98);
+            dirListMenuStrip.Size = new System.Drawing.Size(107, 126);
             dirListMenuStrip.Opening += DirList_ContextMenuStrip_Opening;
             // 
             // browseDirListMenuItem
             // 
             browseDirListMenuItem.Name = "browseDirListMenuItem";
-            browseDirListMenuItem.Size = new System.Drawing.Size(98, 22);
+            browseDirListMenuItem.Size = new System.Drawing.Size(106, 22);
             browseDirListMenuItem.Text = "Browse";
             browseDirListMenuItem.Click += Browse_DirList_MenuItem_Click;
             // 
             // removeDirListMenuItem
             // 
             removeDirListMenuItem.Name = "removeDirListMenuItem";
-            removeDirListMenuItem.Size = new System.Drawing.Size(98, 22);
+            removeDirListMenuItem.Size = new System.Drawing.Size(106, 22);
             removeDirListMenuItem.Text = "Remove";
             removeDirListMenuItem.Click += Remove_DirList_MenuItem_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new System.Drawing.Size(95, 6);
+            toolStripSeparator1.Size = new System.Drawing.Size(103, 6);
             // 
             // addDirListMenuItem
             // 
             addDirListMenuItem.Name = "addDirListMenuItem";
-            addDirListMenuItem.Size = new System.Drawing.Size(98, 22);
+            addDirListMenuItem.Size = new System.Drawing.Size(106, 22);
             addDirListMenuItem.Text = "Add New";
             addDirListMenuItem.Click += Add_DirList_MenuItem_Click;
             // 
             // clearAllDirListMenuItem
             // 
             clearAllDirListMenuItem.Name = "clearAllDirListMenuItem";
-            clearAllDirListMenuItem.Size = new System.Drawing.Size(98, 22);
+            clearAllDirListMenuItem.Size = new System.Drawing.Size(106, 22);
             clearAllDirListMenuItem.Text = "Clear All";
             clearAllDirListMenuItem.Click += ClearAll_DirList_MenuItem_Click;
+            // 
+            // toolStripSeparator2
+            // 
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new System.Drawing.Size(103, 6);
+            // 
+            // exportDirListMenuItem
+            // 
+            exportDirListMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { exportCSV, exportJSON, exportXML });
+            exportDirListMenuItem.Name = "exportDirListMenuItem";
+            exportDirListMenuItem.Size = new System.Drawing.Size(106, 22);
+            exportDirListMenuItem.Text = "Export to...";
+            // 
+            // exportCSV
+            // 
+            exportCSV.Name = "exportCSV";
+            exportCSV.Size = new System.Drawing.Size(102, 22);
+            exportCSV.Text = "CSV";
+            // 
+            // exportJSON
+            // 
+            exportJSON.Name = "exportJSON";
+            exportJSON.Size = new System.Drawing.Size(102, 22);
+            exportJSON.Text = "JSON";
+            // 
+            // exportXML
+            // 
+            exportXML.Name = "exportXML";
+            exportXML.Size = new System.Drawing.Size(102, 22);
+            exportXML.Text = "XML";
             // 
             // btnAddDirectory
             // 
@@ -209,13 +211,14 @@
             chkRemovePath.AutoSize = true;
             chkRemovePath.Checked = true;
             chkRemovePath.CheckState = System.Windows.Forms.CheckState.Checked;
-            chkRemovePath.Location = new System.Drawing.Point(878, 72);
+            chkRemovePath.Location = new System.Drawing.Point(849, 141);
             chkRemovePath.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             chkRemovePath.Name = "chkRemovePath";
             chkRemovePath.Size = new System.Drawing.Size(167, 19);
             chkRemovePath.TabIndex = 30;
             chkRemovePath.Text = "Remove Path From Results";
             chkRemovePath.UseVisualStyleBackColor = true;
+            chkRemovePath.CheckedChanged += chkRemovePath_CheckedChanged;
             // 
             // label2
             // 
@@ -237,40 +240,69 @@
             btnClearMovieList.UseVisualStyleBackColor = true;
             btnClearMovieList.Click += btnClearMovieList_Click;
             // 
+            // dgvDirectories
+            // 
+            dgvDirectories.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvDirectories.Location = new System.Drawing.Point(14, 237);
+            dgvDirectories.Name = "dgvDirectories";
+            dgvDirectories.Size = new System.Drawing.Size(1045, 449);
+            dgvDirectories.TabIndex = 71;
+            // 
+            // chkShowFiles
+            // 
+            chkShowFiles.AutoSize = true;
+            chkShowFiles.Location = new System.Drawing.Point(849, 169);
+            chkShowFiles.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkShowFiles.Name = "chkShowFiles";
+            chkShowFiles.Size = new System.Drawing.Size(81, 19);
+            chkShowFiles.TabIndex = 72;
+            chkShowFiles.Text = "Show Files";
+            chkShowFiles.UseVisualStyleBackColor = true;
+            chkShowFiles.CheckedChanged += chkShowFiles_CheckedChanged;
+            // 
+            // btnExport
+            // 
+            btnExport.Location = new System.Drawing.Point(845, 102);
+            btnExport.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnExport.Name = "btnExport";
+            btnExport.Size = new System.Drawing.Size(210, 30);
+            btnExport.TabIndex = 73;
+            btnExport.Text = "Export Results";
+            btnExport.UseVisualStyleBackColor = true;
+            btnExport.Click += btnExport_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1070, 723);
+            Controls.Add(btnExport);
+            Controls.Add(chkShowFiles);
+            Controls.Add(dgvDirectories);
             Controls.Add(btnClearMovieList);
             Controls.Add(label2);
             Controls.Add(chkRemovePath);
             Controls.Add(btnClearDirectoryList);
             Controls.Add(btnAddDirectory);
             Controls.Add(lstDirList);
-            Controls.Add(btnScanTV);
             Controls.Add(lblMovies);
             Controls.Add(btnScanMovies);
-            Controls.Add(lstFiltered);
             Controls.Add(txtFilter);
             Controls.Add(label1);
-            Controls.Add(lstMovies);
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Name = "Form1";
             Text = "Form1";
             FormClosing += Form1_FormClosing;
             Load += Form1_Load;
             dirListMenuStrip.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvDirectories).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
-
-        private System.Windows.Forms.ListBox lstMovies;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtFilter;
-        private System.Windows.Forms.ListBox lstFiltered;
         private System.Windows.Forms.Button btnScanMovies;
         private System.Windows.Forms.Label lblMovies;
         private System.Windows.Forms.Button btnScanTV;
@@ -286,6 +318,14 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem addDirListMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearAllDirListMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem exportDirListMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportCSV;
+        private System.Windows.Forms.ToolStripMenuItem exportJSON;
+        private System.Windows.Forms.ToolStripMenuItem exportXML;
+        private System.Windows.Forms.DataGridView dgvDirectories;
+        private System.Windows.Forms.CheckBox chkShowFiles;
+        private System.Windows.Forms.Button btnExport;
     }
 }
 

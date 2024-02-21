@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Storage.Json;
+using System;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
@@ -7,6 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Windows.Forms;
+using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace MovieSearch
 {
@@ -17,17 +20,17 @@ namespace MovieSearch
         private MediaContext db = new();
         private DataAccess da = new();
 
-        private enum ScanType
-        {
-            Directories,
-            Files
-        }
-
         public Form1()
         {
             InitializeComponent();
-            dt.Columns.Add(new DataColumn("MovieTitle"));
-            dt.DefaultView.Sort = "MovieTitle asc";
+            dt.Columns.Add(new DataColumn("RootDirectoryName"));
+            dt.Columns.Add(new DataColumn("ParentDirectoryName"));
+            dt.Columns.Add(new DataColumn("DirectoryName"));
+            dt.Columns.Add(new DataColumn("FileName"));
+            dt.Columns.Add(new DataColumn("Extension"));
+            dt.Columns.Add(new DataColumn("FileSize"));
+            dt.DefaultView.Sort = "DirectoryName asc";
+            dgvDirectories.DataSource = dt;
         }
 
         private void ClearDirList()
@@ -37,50 +40,51 @@ namespace MovieSearch
         }
 
         private void ClearMovieList()
-        {
-            lstMovies.DataSource = null;
-            lstMovies.Items.Clear();
+        {            
+            dt.Clear();
             lblMovies.Text = "0 Result(s)";
+        }
+
+        private void SetColumnVisibility()
+        {
+            dgvDirectories.Columns["RootDirectoryName"].Visible = !chkRemovePath.Checked;
+            dgvDirectories.Columns["DirectoryName"].Visible = chkShowFiles.Checked;
+            dgvDirectories.Columns["FileName"].Visible = chkShowFiles.Checked;
+            dgvDirectories.Columns["Extension"].Visible = chkShowFiles.Checked;
+            dgvDirectories.Columns["FileSize"].Visible = chkShowFiles.Checked;
         }
 
         private void UpdateMovieListBinding()
         {
-            lstMovies.DataSource = dt;
-            lstMovies.ValueMember = "MovieTitle";
-            lstMovies.DisplayMember = "MovieTitle";
-            
-            lblMovies.Text = String.Format("{0} Result{1}", lstMovies.Items.Count.ToString("n0", CultureInfo.CurrentCulture),
-                           lstMovies.Items.Count == 1 ? "" : "(s)");
-        }
+            SetColumnVisibility();
 
-        private string removeFilePath(string sFileName)
-        {
-            try
+            string filter = ReplaceSpecialCharacters(txtFilter.Text);
+
+
+            if (!chkShowFiles.Checked)
             {
-                foreach (string path in lstDirList.Items)
-                    if (sFileName.IndexOf(path) >= 0)
-                        sFileName = sFileName.Substring(path.Length);
+                DataTable distinctValues = new DataTable();
+                distinctValues = (DataTable)dt.AsEnumerable()
+                    .GroupBy(r => new { ParentDirectoryName = r.Field<string>("ParentDirectoryName") })
+                    .Select(g => g.First()).Distinct()
+                    .OrderBy(n => n["ParentDirectoryName"]).CopyToDataTable();
+
+                distinctValues.DefaultView.RowFilter = string.Format("ParentDirectoryName LIKE '%{0}%'", filter);
+                dgvDirectories.DataSource = distinctValues;
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show(ex.Message);
+                dt.DefaultView.RowFilter = string.Format("ParentDirectoryName LIKE '%{0}%'", filter);
+                dgvDirectories.DataSource = dt;
             }
 
-            return sFileName;
+            lblMovies.Text = String.Format("{0} Result{1}", dgvDirectories.Rows.Count.ToString("n0", CultureInfo.CurrentCulture),
+                           dgvDirectories.Rows.Count == 1 ? "" : "(s)");
         }
 
         private void txtFilter_TextChanged(object sender, EventArgs e)
         {
-            string filter = ReplaceSpecialCharacters(txtFilter.Text);
-
-            //dt.DefaultView.RowFilter = string.Format("MovieTitle LIKE '\\%{0}%'", filter);
-            dt.DefaultView.RowFilter = string.Format("MovieTitle LIKE '%{0}%'", filter);
-
-
             UpdateMovieListBinding();
-
-            lblMovies.Text = String.Format("{0} Result{1}", dt.DefaultView.Count.ToString(),
-                lstMovies.Items.Count == 1 ? "" : "(s)");
         }
 
 
@@ -94,37 +98,36 @@ namespace MovieSearch
         }
 
         private void btnScan_Click(object sender, EventArgs e)
-        {            
-            ScanFolders(ScanType.Directories);
+        {
+            Cursor cur = Cursor.Current;
+            Cursor.Current = Cursors.WaitCursor;            
+            ScanFolders();
+            Cursor.Current = cur;
         }
 
-        private void ScanFolders(ScanType scanType)
+        private void ScanFolders()
         {
+            //ScanType scanType
             try
             {
                 dt.Rows.Clear();
                 ClearMovieList();
                 foreach (String path in lstDirList.Items)
                     foreach (String dir in Directory.EnumerateDirectories(path))
-                        if (scanType == ScanType.Files)
+                    {
+                        foreach (string file in Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories))
                         {
-                            foreach (String file in Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories))
-                            {
-                                DataRow dr = dt.NewRow();
-                                if (chkRemovePath.Checked)
-                                    dr[0] = removeFilePath(file);
-                                else
-                                    dr[0] = file;
-                                dt.Rows.Add(dr);
-                            }
-                        }
-                        else
-                        {
+                            FileInfo fi = new FileInfo(file);
                             DataRow dr = dt.NewRow();
-                            dr[0] = removeFilePath(dir);
-
+                            dr[0] = path;
+                            dr[1] = dir.Replace(path, "");
+                            dr[2] = fi.DirectoryName.Replace(path, "");
+                            dr[3] = fi.Name;
+                            dr[4] = fi.Extension.ToLower();
+                            dr[5] = fi.Length;
                             dt.Rows.Add(dr);
                         }
+                    }
 
                 UpdateMovieListBinding();
                 MessageBox.Show("Loaded!");
@@ -153,10 +156,7 @@ namespace MovieSearch
             db.SaveChanges();
         }
 
-        private void btnScanTV_Click(object sender, EventArgs e)
-        {
-            ScanFolders(ScanType.Files);
-        }
+
 
         private void btnAddDirectory_Click(object sender, EventArgs e)
         {
@@ -212,6 +212,35 @@ namespace MovieSearch
         private void ClearAll_DirList_MenuItem_Click(object sender, EventArgs e)
         {
             ClearDirList();
+        }
+
+        private void chkRemovePath_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateMovieListBinding();
+        }
+
+        private void chkShowFiles_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateMovieListBinding();
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            string JSONresults;
+            JSONresults = JsonConvert.SerializeObject(dt);
+
+            SaveFileDialog saveFile = new SaveFileDialog(); 
+            saveFile.Filter = "json(*.json)|*.json";
+            saveFile.Title = "Save results as JSON";
+            saveFile.ShowDialog();
+
+            if (saveFile.FileName != String.Empty) 
+            { 
+                StreamWriter sw = new StreamWriter(saveFile.FileName);
+                sw.WriteLine(JSONresults);  
+                sw.Close(); 
+            }
+
         }
     }
 }
