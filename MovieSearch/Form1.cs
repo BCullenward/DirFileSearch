@@ -10,6 +10,7 @@ using System.Reflection.Metadata.Ecma335;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace MovieSearch
 {
@@ -29,6 +30,7 @@ namespace MovieSearch
             dt.Columns.Add(new DataColumn("FileName"));
             dt.Columns.Add(new DataColumn("Extension"));
             dt.Columns.Add(new DataColumn("FileSize"));
+            dt.Columns.Add(new DataColumn("FullPath"));
             dt.DefaultView.Sort = "DirectoryName asc";
             dgvDirectories.DataSource = dt;
         }
@@ -40,7 +42,7 @@ namespace MovieSearch
         }
 
         private void ClearMovieList()
-        {            
+        {
             dt.Clear();
             lblMovies.Text = "0 Result(s)";
         }
@@ -52,6 +54,7 @@ namespace MovieSearch
             dgvDirectories.Columns["FileName"].Visible = chkShowFiles.Checked;
             dgvDirectories.Columns["Extension"].Visible = chkShowFiles.Checked;
             dgvDirectories.Columns["FileSize"].Visible = chkShowFiles.Checked;
+            dgvDirectories.Columns["FullPath"].Visible = chkShowFiles.Checked;
         }
 
         private void UpdateMovieListBinding()
@@ -74,7 +77,8 @@ namespace MovieSearch
             }
             else
             {
-                dt.DefaultView.RowFilter = string.Format("ParentDirectoryName LIKE '%{0}%'", filter);
+                //dt.DefaultView.RowFilter = string.Format("ParentDirectoryName LIKE '%{0}%'", filter);
+                dt.DefaultView.RowFilter = string.Format("DirectoryName LIKE '%{0}%'", filter);
                 dgvDirectories.DataSource = dt;
             }
 
@@ -100,7 +104,7 @@ namespace MovieSearch
         private void btnScan_Click(object sender, EventArgs e)
         {
             Cursor cur = Cursor.Current;
-            Cursor.Current = Cursors.WaitCursor;            
+            Cursor.Current = Cursors.WaitCursor;
             ScanFolders();
             Cursor.Current = cur;
         }
@@ -110,6 +114,9 @@ namespace MovieSearch
             //ScanType scanType
             try
             {
+                bool onlyMedia = false;
+                var extList = new List<string> { ".mp4", ".avi", ".mkv", ".webm" , ".mpeg", ".mpg", ".m4v", ".vob", ".wmv", ".flv"};
+
                 dt.Rows.Clear();
                 ClearMovieList();
                 foreach (String path in lstDirList.Items)
@@ -118,14 +125,25 @@ namespace MovieSearch
                         foreach (string file in Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories))
                         {
                             FileInfo fi = new FileInfo(file);
-                            DataRow dr = dt.NewRow();
-                            dr[0] = path;
-                            dr[1] = dir.Replace(path, "");
-                            dr[2] = fi.DirectoryName.Replace(path, "");
-                            dr[3] = fi.Name;
-                            dr[4] = fi.Extension.ToLower();
-                            dr[5] = fi.Length;
-                            dt.Rows.Add(dr);
+                            string ext = fi.Extension.ToLower();
+
+                            int result = extList.IndexOf(ext);
+
+                            if (!onlyMedia)
+                                result = 0;
+
+                            if (result != -1)
+                            {
+                                DataRow dr = dt.NewRow();
+                                dr[0] = path;
+                                dr[1] = dir.Replace(path, "");
+                                dr[2] = fi.DirectoryName.Replace(path, "");
+                                dr[3] = fi.Name;
+                                dr[4] = fi.Extension.ToLower();
+                                dr[5] = fi.Length;
+                                dr[6] = fi.FullName;
+                                dt.Rows.Add(dr);
+                            }
                         }
                     }
 
@@ -226,21 +244,46 @@ namespace MovieSearch
 
         private void btnExport_Click(object sender, EventArgs e)
         {
-            string JSONresults;
-            JSONresults = JsonConvert.SerializeObject(dt);
+            DataTable dtFullPath = dt.Clone();
+            dtFullPath = dt.Copy();
 
-            SaveFileDialog saveFile = new SaveFileDialog(); 
-            saveFile.Filter = "json(*.json)|*.json";
-            saveFile.Title = "Save results as JSON";
+            //dtFullPath.Columns.Remove("RootDirectoryName");
+
+            //dtFullPath.Columns.Remove("DirectoryName");
+            //dtFullPath.Columns.Remove("FileName");
+            //dtFullPath.Columns.Remove("Extension");
+            //dtFullPath.Columns.Remove("FileSize");
+            dtFullPath.DefaultView.Sort = "FileName";
+            dtFullPath = dtFullPath.DefaultView.ToTable();
+
+            SaveFileDialog saveFile = new SaveFileDialog();
+            saveFile.Filter = "json(*.json)|*.json|txt(*.txt)|*.txt";            
             saveFile.ShowDialog();
 
-            if (saveFile.FileName != String.Empty) 
-            { 
-                StreamWriter sw = new StreamWriter(saveFile.FileName);
-                sw.WriteLine(JSONresults);  
-                sw.Close(); 
-            }
+            FileInfo fi = new FileInfo(saveFile.FileName);
+            if (fi.Extension.ToLower() == ".txt")
+            {
 
+                using (StreamWriter sw = new StreamWriter(saveFile.FileName))
+                {
+                    foreach (DataRow dr in dtFullPath.Rows)
+                    {
+                        //sw.WriteLine(dr["ParentDirectoryName"]);
+                        sw.WriteLine(dr["FileName"]);
+                    }
+                }
+            }
+            else if (fi.Extension.ToLower() == ".json")
+            {
+                string JSONresults = JsonConvert.SerializeObject(dtFullPath, Formatting.Indented);
+
+                if (saveFile.FileName != String.Empty)
+                {
+                    StreamWriter sw = new StreamWriter(saveFile.FileName);
+                    sw.WriteLine(JSONresults);
+                    sw.Close();
+                }
+            }
         }
     }
 }

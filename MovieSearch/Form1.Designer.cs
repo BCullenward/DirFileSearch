@@ -90,6 +90,7 @@
             // 
             // lblMovies
             // 
+            lblMovies.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             lblMovies.AutoSize = true;
             lblMovies.Location = new System.Drawing.Point(734, 689);
             lblMovies.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -242,6 +243,7 @@
             // 
             // dgvDirectories
             // 
+            dgvDirectories.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvDirectories.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDirectories.Location = new System.Drawing.Point(14, 237);
             dgvDirectories.Name = "dgvDirectories";
